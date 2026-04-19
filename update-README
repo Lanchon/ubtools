@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -eu
+
+README=README.md
+
+commands=( ubint ubcmd ubread ubwrite )
+
+{
+	cat <<-EOF
+	# ubtools
+
+	### Tiny little tools to interact with U-Boot via the serial console
+
+	Also included is a simple yet robust Python 3.10 library to talk to U-Boot.
+
+	EOF
+
+	echo "| Command | Description |"
+	echo "|---|---|"
+	for cmd in "${commands[@]}"; do
+		echo "| **[$cmd](#$cmd)** | $( ./$cmd --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' ) |"
+	done
+	echo
+
+	for cmd in "${commands[@]}"; do
+		cat <<-EOF
+		### $cmd
+
+		$( ./$cmd --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' )
+
+		\`\`\`
+		$( ./$cmd --help 2>&1 )
+		\`\`\`
+
+		EOF
+	done
+} >$README 
