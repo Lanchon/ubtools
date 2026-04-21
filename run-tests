@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -eu
+
+FILE=run-tests
+
+run() {
+	echo "> $*" >&2
+	"$@"
+}
+
+getvar() {
+    local varname="$1"
+
+    if out="$( run ./ubcmd --quiet printenv "$varname" )"; then
+        printf '%s\n' "${out#*=}"
+    else
+        #echo "Error: Undefined environment variable: $varname" >&2
+        return 1
+    fi
+}
+
+main() {
+	adr="${1:-}"
+
+	run ./ubint
+	echo
+
+	if [[ "$adr" == "" ]]; then
+		if ! adr="$( getvar kernel_addr_r )"; then
+			if ! adr="$( getvar loadaddr )"; then
+				if ! adr="$( getvar fileaddr )"; then
+					echo "Error: Cannot autodetect scratchpad address, please pass it as an argument" >&2
+					return 1
+				fi
+			fi
+		fi
+		[[ $adr == 0x* ]] || adr="0x$adr"
+	fi
+
+	echo "Scratchpad address: $adr"
+	echo
+
+	len="$( wc -c < "$FILE" )"
+	ref="$( cat "$FILE" | sha256sum )"
+
+	for (( offset = 0; offset <= 8; offset++ )); do
+		testadr="$(( "$adr" + "$offset" ))"
+		echo "*** Test address: $testadr"
+		cat "$FILE" | run ./ubwrite - "$testadr"
+		if [[ "$( run ./ubread - "$testadr" "$len" | sha256sum )" != "$ref" ]]; then
+			echo "Error: Round-trip checksum: FAIL" >&2
+			return 1
+		fi
+		echo "*** Round-trip checksum: PASS"
+		echo
+	done
+
+	echo "All tests: PASS"
+	echo
+}
+
+main "$@"
