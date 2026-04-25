@@ -21,7 +21,7 @@ run_tool() {
 
 	### Tiny little tools to interact with U-Boot via the serial console
 
-	Also included is a simple yet robust Python 3.10 library to talk to U-Boot.
+	Also included is a simple yet robust Python 3.11 library to talk to U-Boot.
 
 	EOF
 

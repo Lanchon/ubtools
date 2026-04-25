@@ -27,17 +27,17 @@ class UBoot:
 	# Initialization
 
 	def __init__(self, config: UBootConfig | None = None) -> None:
-		# WARNING: the Ctrl-C sent during initialization clears the previous exit code.
+		# WARNING: Ctrl-C is sent during initialization, which clears the previous exit code.
 		if config is None:
 			config = UBootConfig()
 		self.serial = config.open_serial()
 		self.encoding = config.encoding
 		try:
-			# send Ctrl-C to purge command line buffer
+			# Send Ctrl-C to purge command line buffer.
 			self.serial.write(b'\x03')
 			self.serial.readline()
 
-			# detect u-boot prompt
+			# Detect U-Boot prompt.
 			cmd = b'#TAG'
 			self.serial.write(cmd + b'\n')
 			echo = self.serial.readline().strip(b'\r\n')
@@ -45,7 +45,7 @@ class UBoot:
 				raise UBootCommunicationError(f"Failed to detect prompt (sent: {cmd!r}, received: {echo!r})")
 			self.prompt = echo[:-len(cmd)]
 
-			# send test command
+			# Send test command.
 			self.send_command(b'#TEST')
 		except Exception:
 			try:
@@ -100,20 +100,20 @@ class UBoot:
 		return (line.strip(b'\r\n').decode(self.encoding) for line in self.stream_output_bytes())
 
 	def stream_output_bytes(self) -> Iterator[bytes]:
-		# stream output until it stops at a prompt
+		# Stream output until it stops at a prompt.
 		while True:
 			line = b''
 			while not line.endswith((b'\n', self.prompt)):
 				line += self.serial.readline()
 			if line.endswith(self.prompt):
 				line = line[:-len(self.prompt)]
-				# some u-boot builds use "\r\n\r" for line termination (!!!)
+				# Some U-Boot builds use "\r\n\r" for line termination.
 				if line != b'' and line != b'\r':
 					yield line
 				break
 			yield line
 
-		# reestablish and verify sync
+		# Reestablish and verify sync.
 		cmd = b'#EOO_TAG'
 		self.serial.write(cmd + b'\n')
 		echo = self.serial.readline().strip(b'\r\n')
@@ -122,7 +122,7 @@ class UBoot:
 
 	def get_exit_code(self, restore: bool = False) -> int:
 		# WARNING: reading the exit code necessarily clears it and in general there is no way to restore its value,
-		# but at least its zero/non-zero status can be restored with the 'false' command.
+		# but at least its zero/non-zero status can be restored with an optional 'false' command.
 		self.send_command(b'echo $?')
 		code = int(self.serial.readline().strip(b'\r\n'))
 		if code != 0 and restore:
@@ -145,7 +145,7 @@ class UBoot:
 		index = 0
 		step = 1
 
-		# do smallest possible alignment transfers as needed, staring with 8-bits and up to 32-bits or first failure
+		# Do smallest possible alignment transfers as needed, staring with 8-bits and up to 32-bits or first failure.
 		while length >= step and step < 8:
 			if adr % (2 * step) != 0:
 				if self._adaptive_transfer_try(transfer, data[index : index + step], adr, 8 * step, progress_file):
@@ -156,7 +156,8 @@ class UBoot:
 					break
 			step *= 2
 
-		# do eagerly large transfers as needed, staring with 64-bits or a step down previous failure and down to 8-bits
+		# Do eagerly large transfers as needed, staring with 64-bits if no previous failure or else a size step
+		# downwards from the previous failure, and down to 8-bits.
 		while step >= 1:
 			chunk = length - (length % step)
 			if chunk != 0:

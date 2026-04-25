@@ -17,8 +17,8 @@ def main(argv: Sequence[str] | None = None) -> None:
 		description="Interrupt U-Boot autoboot via the serial console"
 	)
 
-	# Current implementations of ubdriver.UBoot() and  ubdriver.UBoot.detect()
-	# already send Return and Ctrl-C characters during inital synchronization,
+	# Current implementations of ubtools.UBoot() and  ubtools.UBoot.detect()
+	# already send Return and Ctrl-C characters during initial synchronization,
 	# making specific options for these characters unnecessary.
 
 	parser.add_argument("-s", "--string", metavar="XXX",
