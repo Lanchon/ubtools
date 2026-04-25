@@ -11,37 +11,37 @@ from .utils import *
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-	parser = argparse.ArgumentParser(
-		prog="ubcmd",
-		description="Send a command to U-Boot via the serial console and print the output",
-		add_help=False
-	)
+    parser = argparse.ArgumentParser(
+        prog="ubcmd",
+        description="Send a command to U-Boot via the serial console and print the output",
+        add_help=False
+    )
 
-	parser.add_argument("-q", "--quiet", action="store_true",
-	                    help="do not show exit code")
+    parser.add_argument("-q", "--quiet", action="store_true",
+                        help="do not show exit code")
 
-	parser.add_argument("command", metavar="COMMAND",
-	                    help="command to send")
-	parser.add_argument("args", nargs=argparse.REMAINDER, metavar="ARGS",
-	                    help="arguments")
+    parser.add_argument("command", metavar="COMMAND",
+                        help="command to send")
+    parser.add_argument("args", nargs=argparse.REMAINDER, metavar="ARGS",
+                        help="arguments")
 
-	add_parser_args(parser)
-	args = parser.parse_args(argv)
-	config = config_from_parser_args(args)
+    add_parser_args(parser)
+    args = parser.parse_args(argv)
+    config = config_from_parser_args(args)
 
-	cmd_list = [args.command] + args.args
-	cmd = " ".join(cmd_list)
+    cmd_list = [args.command] + args.args
+    cmd = " ".join(cmd_list)
 
-	with ubtools.UBoot(config) as uboot:
-		uboot.send_command(cmd)
-		for line in uboot.stream_output():
-			print(line)
-		code = uboot.get_exit_code()
-		if not args.quiet and code != 0:
-			print(f"Exit code: {code}", file=sys.stderr)
-		return code
+    with ubtools.UBoot(config) as uboot:
+        uboot.send_command(cmd)
+        for line in uboot.stream_output():
+            print(line)
+        code = uboot.get_exit_code()
+        if not args.quiet and code != 0:
+            print(f"Exit code: {code}", file=sys.stderr)
+        return code
 
 
 if __name__ == "__main__":
-	sys.exit(main())
+    sys.exit(main())
 
