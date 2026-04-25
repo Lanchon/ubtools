@@ -7,15 +7,8 @@ from typing import Sequence
 
 import ubtools
 
+from .utils import *
 
-def nonnegative_int(arg: str) -> int:
-	try:
-		value = int(arg, 0)
-	except ValueError:
-		raise argparse.ArgumentTypeError(f"invalid integer value: {arg}")
-	if value < 0:
-		raise argparse.ArgumentTypeError(f"value cannot be negative: {arg}")
-	return value
 
 def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
@@ -35,9 +28,9 @@ def main(argv: Sequence[str] | None = None) -> None:
 	parser.add_argument("length", metavar="LENGTH", type=nonnegative_int,
 	                    help="number of bytes (decimal or hex)")
 
-	ubtools.UBootConfig.add_parser_arguments(parser)
+	add_parser_args(parser)
 	args = parser.parse_args(argv)
-	config = ubtools.UBootConfig.from_parser_namespace(args)
+	config = config_from_parser_args(args)
 
 	progress_file = sys.stderr if not args.quiet else None
 

@@ -7,6 +7,8 @@ from typing import Sequence
 
 import ubtools
 
+from .utils import *
+
 
 def main(argv: Sequence[str] | None = None) -> int:
 	parser = argparse.ArgumentParser(
@@ -24,9 +26,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 	                    help="arguments"
 	                    )
 
-	ubtools.UBootConfig.add_parser_arguments(parser)
+	add_parser_args(parser)
 	args = parser.parse_args(argv)
-	config = ubtools.UBootConfig.from_parser_namespace(args)
+	config = config_from_parser_args(args)
 
 	cmd_list = [args.command] + args.args
 	cmd = " ".join(cmd_list)

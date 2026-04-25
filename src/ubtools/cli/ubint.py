@@ -8,6 +8,8 @@ from typing import Sequence
 
 import ubtools
 
+from .utils import *
+
 
 def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
@@ -22,9 +24,9 @@ def main(argv: Sequence[str] | None = None) -> None:
 	parser.add_argument("-s", "--string", metavar="XXX",
 	                    help="interrupt using custom string")
 
-	ubtools.UBootConfig.add_parser_arguments(parser)
+	add_parser_args(parser)
 	args = parser.parse_args(argv)
-	config = ubtools.UBootConfig.from_parser_namespace(args)
+	config = config_from_parser_args(args)
 
 	cmd = args.string.encode(config.encoding) if args.string is not None else b' '
 

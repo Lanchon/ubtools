@@ -3,7 +3,6 @@ __all__ = ["UBootConfig"]
 import serial
 
 from dataclasses import dataclass
-from typing import Self
 
 
 @dataclass
@@ -32,28 +31,4 @@ class UBootConfig:
 			inter_byte_timeout=self.inter_byte_timeout,
 			exclusive=self.exclusive
 		)
-
-	@staticmethod
-	def add_parser_arguments(parser) -> None:
-		parser.add_argument("-p", "--port",
-		                    help="serial port device")
-		parser.add_argument("-b", "--baud", type=int,
-		                    help="baud rate")
-		parser.add_argument("--timeout", metavar="SECONDS", type=float,
-		                    help="timeout for read operations")
-		parser.add_argument("--shared", action="store_true",
-		                    help="open serial port in shared mode")
-
-	@classmethod
-	def from_parser_namespace(cls, args) -> Self:
-		config = cls()
-		if args.port is not None:
-			config.port = args.port
-		if args.baud is not None:
-			config.baudrate = args.baud
-		if args.timeout is not None:
-			config.timeout = args.timeout
-		if args.shared:
-			config.exclusive = False
-		return config
 
