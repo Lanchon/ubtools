@@ -14,7 +14,8 @@ from .utils import *
 def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
 		prog="ubint",
-		description="Interrupt U-Boot autoboot via the serial console"
+		description="Interrupt U-Boot autoboot via the serial console",
+		add_help=False
 	)
 
 	# Current implementations of ubtools.UBoot() and  ubtools.UBoot.detect()

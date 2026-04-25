@@ -16,17 +16,19 @@ Also included is a simple yet robust Python 3.11 library to talk to U-Boot.
 Interrupt U-Boot autoboot via the serial console
 
 ```
-usage: ubint [-h] [-s XXX] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared]
+usage: ubint [-s XXX] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
+             [--version]
 
 Interrupt U-Boot autoboot via the serial console
 
 options:
-  -h, --help            show this help message and exit
   -s XXX, --string XXX  interrupt using custom string
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  baud rate
   --timeout SECONDS     timeout for read operations
   --shared              open serial port in shared mode
+  -h, --help            show help message and exit
+  --version             show version number and exit
 ```
 
 ### ubcmd
@@ -34,7 +36,8 @@ options:
 Send a command to U-Boot via the serial console and print the output
 
 ```
-usage: ubcmd [-h] [-q] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared]
+usage: ubcmd [-q] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
+             [--version]
              COMMAND ...
 
 Send a command to U-Boot via the serial console and print the output
@@ -44,12 +47,13 @@ positional arguments:
   ARGS                  arguments
 
 options:
-  -h, --help            show this help message and exit
   -q, --quiet           do not show exit code
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  baud rate
   --timeout SECONDS     timeout for read operations
   --shared              open serial port in shared mode
+  -h, --help            show help message and exit
+  --version             show version number and exit
 ```
 
 ### ubread
@@ -57,8 +61,8 @@ options:
 Read from U-Boot memory via the serial console
 
 ```
-usage: ubread [-h] [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-              [--shared]
+usage: ubread [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
+              [--shared] [-h] [--version]
               FILE ADDRESS LENGTH
 
 Read from U-Boot memory via the serial console
@@ -69,13 +73,14 @@ positional arguments:
   LENGTH                number of bytes (decimal or hex)
 
 options:
-  -h, --help            show this help message and exit
   -q, --quiet           do not show progress
   -w BITS, --word BITS  use reads of specified bit width
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  baud rate
   --timeout SECONDS     timeout for read operations
   --shared              open serial port in shared mode
+  -h, --help            show help message and exit
+  --version             show version number and exit
 ```
 
 ### ubwrite
@@ -83,8 +88,8 @@ options:
 Write to U-Boot memory via the serial console
 
 ```
-usage: ubwrite [-h] [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-               [--shared]
+usage: ubwrite [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
+               [--shared] [-h] [--version]
                FILE ADDRESS
 
 Write to U-Boot memory via the serial console
@@ -94,12 +99,13 @@ positional arguments:
   ADDRESS               memory address (decimal or hex)
 
 options:
-  -h, --help            show this help message and exit
   -q, --quiet           do not show progress
   -w BITS, --word BITS  use writes of specified bit width
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  baud rate
   --timeout SECONDS     timeout for read operations
   --shared              open serial port in shared mode
+  -h, --help            show help message and exit
+  --version             show version number and exit
 ```
 

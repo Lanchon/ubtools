@@ -13,18 +13,17 @@ from .utils import *
 def main(argv: Sequence[str] | None = None) -> int:
 	parser = argparse.ArgumentParser(
 		prog="ubcmd",
-		description="Send a command to U-Boot via the serial console and print the output"
+		description="Send a command to U-Boot via the serial console and print the output",
+		add_help=False
 	)
 
 	parser.add_argument("-q", "--quiet", action="store_true",
 	                    help="do not show exit code")
 
 	parser.add_argument("command", metavar="COMMAND",
-	                    help="command to send"
-	                    )
+	                    help="command to send")
 	parser.add_argument("args", nargs=argparse.REMAINDER, metavar="ARGS",
-	                    help="arguments"
-	                    )
+	                    help="arguments")
 
 	add_parser_args(parser)
 	args = parser.parse_args(argv)

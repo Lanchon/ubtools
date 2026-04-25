@@ -13,7 +13,8 @@ from .utils import *
 def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
 		prog="ubwrite",
-		description="Write to U-Boot memory via the serial console"
+		description="Write to U-Boot memory via the serial console",
+		add_help=False
 	)
 
 	parser.add_argument("-q", "--quiet", action="store_true",

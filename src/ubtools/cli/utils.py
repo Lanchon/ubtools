@@ -1,8 +1,10 @@
 __all__ = [
 	"nonnegative_int",
 	"add_parser_args",
-	"set_from_parser_args",
-	"config_from_parser_args"
+	"add_config_parser_args",
+	"add_version_parser_arg",
+	"set_config_from_parser_args",
+	"config_from_parser_args",
 ]
 
 import argparse
@@ -22,6 +24,11 @@ def nonnegative_int(arg: str) -> int:
 	return value
 
 def add_parser_args(parser) -> None:
+	add_config_parser_args(parser)
+	add_version_parser_arg(parser)
+	#parser.epilog = f"ubtools version: {ubtools.__version__}"
+
+def add_config_parser_args(parser) -> None:
 	parser.add_argument("-p", "--port",
 	                    help="serial port device")
 	parser.add_argument("-b", "--baud", type=int,
@@ -31,7 +38,13 @@ def add_parser_args(parser) -> None:
 	parser.add_argument("--shared", action="store_true",
 	                    help="open serial port in shared mode")
 
-def set_from_parser_args(config: ubtools.UBootConfig, args) -> None:
+def add_version_parser_arg(parser) -> None:
+	parser.add_argument("-h", "--help", action="help",
+	                    help="show help message and exit")
+	parser.add_argument("--version", action="version", version=ubtools.__version__,
+	                    help="show version number and exit")
+
+def set_config_from_parser_args(config: ubtools.UBootConfig, args) -> None:
 	if args.port is not None:
 		config.port = args.port
 	if args.baud is not None:
@@ -45,6 +58,6 @@ ConfigT = TypeVar("ConfigT", bound=ubtools.UBootConfig)
 
 def config_from_parser_args(args, cls: Type[ConfigT] = ubtools.UBootConfig) -> ConfigT:
 	config = ubtools.UBootConfig()
-	set_from_parser_args(config, args)
+	set_config_from_parser_args(config, args)
 	return config
 
