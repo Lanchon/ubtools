@@ -16,12 +16,34 @@ run_tool() {
 }
 
 {
-	cat <<-EOF
+	cat <<-'EOF'
 	# ubtools
 
 	### Tiny little tools to interact with U-Boot via the serial console
 
 	Also included is a simple yet robust Python 3.11 library to talk to U-Boot.
+
+	### Usage
+
+	To install the tools:
+	```sh
+	pipx install ubtools
+	```
+
+	To run without installing:
+	```sh
+	cd src
+	python -m ubtools.cli.COMMAND ...
+	```
+
+	To build and test:
+	```sh
+	./build
+	./run-tests
+	pipx install -e .
+	```
+
+	### Commands
 
 	EOF
 

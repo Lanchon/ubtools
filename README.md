@@ -4,6 +4,28 @@
 
 Also included is a simple yet robust Python 3.11 library to talk to U-Boot.
 
+### Usage
+
+To install the tools:
+```sh
+pipx install ubtools
+```
+
+To run without installing:
+```sh
+cd src
+python -m ubtools.cli.COMMAND ...
+```
+
+To build and test:
+```sh
+./build
+./run-tests
+pipx install -e .
+```
+
+### Commands
+
 | Command | Description |
 |---|---|
 | **[ubint](#ubint)** | Interrupt U-Boot autoboot via the serial console |
