@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -eu
+
+pyproject-build
+echo
+
+twine check dist/*
+echo
+
+echo "Updating README"
+./update-README
+echo
+
+echo "To install project in editable mode:"
+echo "  pipx install -e ."
+echo
+echo "To uninstall:"
+echo "  pipx uninstall ubtools"
+echo
+

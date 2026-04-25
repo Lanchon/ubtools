@@ -1,0 +1,49 @@
+[build-system]
+requires = [ "setuptools>=68" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ubtools"
+version = "0.1.0"
+description = "Tiny little tools to interact with U-Boot via the serial console"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Lanchon", email = "lanchon@gmail.com" }
+]
+license = "GPL-3.0-or-later"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Embedded Systems",
+    "Topic :: System :: Hardware",
+    "Intended Audience :: Developers",
+]
+keywords = [ "u-boot", "uboot", "serial", "bootloader", "embedded" ]
+requires-python = ">=3.11"
+dependencies = [
+    "pyserial>=3.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "twine",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Lanchon/ubtools"
+"Bug Tracker" = "https://github.com/Lanchon/ubtools/issues"
+
+[project.scripts]
+ubint = "ubtools.cli.ubint:main"
+ubcmd = "ubtools.cli.ubcmd:main"
+ubread = "ubtools.cli.ubread:main"
+ubwrite = "ubtools.cli.ubwrite:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = [ "src" ]
+

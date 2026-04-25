@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
 README=README.md
 
@@ -45,3 +45,4 @@ run_tool() {
 		EOF
 	done
 } >$README 
+
