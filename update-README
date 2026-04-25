@@ -6,6 +6,15 @@ README=README.md
 
 commands=( ubint ubcmd ubread ubwrite )
 
+run_tool() {
+	local tool="$1"
+
+	(
+		cd src
+		python3 -m "ubtools.cli.$tool" "${@:2}"
+	)
+}
+
 {
 	cat <<-EOF
 	# ubtools
@@ -19,7 +28,7 @@ commands=( ubint ubcmd ubread ubwrite )
 	echo "| Command | Description |"
 	echo "|---|---|"
 	for cmd in "${commands[@]}"; do
-		echo "| **[$cmd](#$cmd)** | $( ./$cmd --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' ) |"
+		echo "| **[$cmd](#$cmd)** | $( run_tool "$cmd" --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' ) |"
 	done
 	echo
 
@@ -27,10 +36,10 @@ commands=( ubint ubcmd ubread ubwrite )
 		cat <<-EOF
 		### $cmd
 
-		$( ./$cmd --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' )
+		$( run_tool "$cmd" --help 2>&1 | sed -n '/^[^[:space:]]/p' | sed -n '2p' )
 
 		\`\`\`
-		$( ./$cmd --help 2>&1 )
+		$( run_tool "$cmd" --help 2>&1 )
 		\`\`\`
 
 		EOF

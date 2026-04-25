@@ -1,104 +1,14 @@
-#!/usr/bin/env python3
+__all__ = ["UBoot"]
 
 import re
 import serial
 import struct
 
-from dataclasses import dataclass
 from typing import Callable, Iterator, Self
 
-Buffer = bytes | bytearray | memoryview
-WritableBuffer = bytearray | memoryview
-
-
-class UBootError(RuntimeError):
-	pass
-
-
-class UBootCommunicationError(UBootError):
-	pass
-
-
-class UBootCommandError(UBootError):
-	def __init__(self, message: str, command: str | None = None, output: list[str] | None = None,
-	             exit_code: int | None = None) -> None:
-		super().__init__(message)
-		self.command = command
-		self.output = output
-		self.exit_code = exit_code
-
-	def __str__(self) -> str:
-		parts = [super().__str__()]
-		if self.command is not None:
-			parts.append(f"command={self.command!r}")
-		if self.output is not None:
-			parts.append(f"output={self.output!r}")
-		if self.exit_code is not None:
-			parts.append(f"exit_code={self.exit_code}")
-		return "\n\t".join(parts)
-
-
-class UBootCommandExitCodeError(UBootCommandError):
-	def __init__(self, command: str | None = None, output: list[str] | None = None,
-	             exit_code: int | None = None) -> None:
-		super().__init__(f"Command failed with exit code {exit_code}",
-		                 command=command, output=output, exit_code=exit_code)
-
-
-class UBootCommandOutputError(UBootCommandError):
-	pass
-
-
-@dataclass
-class UBootConfig:
-	port: str = "/dev/ttyUSB0"
-	baudrate: int = 115200
-	bytesize: int = serial.EIGHTBITS
-	parity: str = serial.PARITY_NONE
-	stopbits: float = serial.STOPBITS_ONE
-	timeout: float = 0.1
-	write_timeout: float | None = None
-	inter_byte_timeout: float | None = None
-	exclusive: bool | None = True
-
-	encoding: str = "latin-1"
-
-	def open_serial(self) -> serial.Serial:
-		return serial.Serial(
-			port=self.port,
-			baudrate=self.baudrate,
-			bytesize=self.bytesize,
-			parity=self.parity,
-			stopbits=self.stopbits,
-			timeout=self.timeout,
-			write_timeout=self.write_timeout,
-			inter_byte_timeout=self.inter_byte_timeout,
-			exclusive=self.exclusive
-		)
-
-	@staticmethod
-	def add_parser_arguments(parser) -> None:
-		parser.add_argument("-p", "--port",
-		                    help="serial port device")
-		parser.add_argument("-b", "--baud", type=int,
-		                    help="baud rate")
-		parser.add_argument("--timeout", metavar="SECONDS", type=float,
-		                    help="timeout for read operations")
-		parser.add_argument("--shared", action="store_true",
-		                    help="open serial port in shared mode")
-
-	@classmethod
-	def from_parser_namespace(cls, args) -> Self:
-		config = cls()
-		if args.port is not None:
-			config.port = args.port
-		if args.baud is not None:
-			config.baudrate = args.baud
-		if args.timeout is not None:
-			config.timeout = args.timeout
-		if args.shared:
-			config.exclusive = False
-		return config
+from .config import *
+from .errors import *
+from .types import *
 
 
 class UBoot:

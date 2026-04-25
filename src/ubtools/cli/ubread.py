@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
+__all__ = ["main"]
 
 import argparse
-import os
 import sys
-import typing
 
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+from typing import Sequence
 
-import ubdriver
+import ubtools
 
 
 def nonnegative_int(arg: str) -> int:
@@ -19,7 +17,7 @@ def nonnegative_int(arg: str) -> int:
 		raise argparse.ArgumentTypeError(f"value cannot be negative: {arg}")
 	return value
 
-def main_ubread(argv: typing.Sequence[str] | None = None) -> None:
+def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
 		prog="ubread",
 		description="Read from U-Boot memory via the serial console"
@@ -37,13 +35,13 @@ def main_ubread(argv: typing.Sequence[str] | None = None) -> None:
 	parser.add_argument("length", metavar="LENGTH", type=nonnegative_int,
 	                    help="number of bytes (decimal or hex)")
 
-	ubdriver.UBootConfig.add_parser_arguments(parser)
+	ubtools.UBootConfig.add_parser_arguments(parser)
 	args = parser.parse_args(argv)
-	config = ubdriver.UBootConfig.from_parser_namespace(args)
+	config = ubtools.UBootConfig.from_parser_namespace(args)
 
 	progress_file = sys.stderr if not args.quiet else None
 
-	with ubdriver.UBoot(config) as uboot:
+	with ubtools.UBoot(config) as uboot:
 		data = uboot.read(args.address, args.length, bit_width=args.word, progress_file=progress_file)
 
 	if args.file == "-":
@@ -54,5 +52,5 @@ def main_ubread(argv: typing.Sequence[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
-	sys.exit(main_ubread())
+	sys.exit(main())
 

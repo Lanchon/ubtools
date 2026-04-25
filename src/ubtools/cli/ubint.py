@@ -1,17 +1,15 @@
-#!/usr/bin/env python3
+__all__ = ["main"]
 
 import argparse
-import os
-import sys
 import time
-import typing
+import sys
 
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+from typing import Sequence
 
-import ubdriver
+import ubtools
 
 
-def main_ubint(argv: typing.Sequence[str] | None = None) -> None:
+def main(argv: Sequence[str] | None = None) -> None:
 	parser = argparse.ArgumentParser(
 		prog="ubint",
 		description="Interrupt U-Boot autoboot via the serial console"
@@ -24,24 +22,24 @@ def main_ubint(argv: typing.Sequence[str] | None = None) -> None:
 	parser.add_argument("-s", "--string", metavar="XXX",
 	                    help="interrupt using custom string")
 
-	ubdriver.UBootConfig.add_parser_arguments(parser)
+	ubtools.UBootConfig.add_parser_arguments(parser)
 	args = parser.parse_args(argv)
-	config = ubdriver.UBootConfig.from_parser_namespace(args)
+	config = ubtools.UBootConfig.from_parser_namespace(args)
 
 	cmd = args.string.encode(config.encoding) if args.string is not None else b' '
 
-	if not ubdriver.UBoot.detect(config):
+	if not ubtools.UBoot.detect(config):
 		print("Trying to interrupt U-Boot autoboot...")
 		while True:
 			with config.open_serial() as serial:
 				serial.write(cmd)
 				time.sleep(serial.timeout)
-			if ubdriver.UBoot.detect(config):
+			if ubtools.UBoot.detect(config):
 				break
 
 	print("U-Boot is ready")
 
 
 if __name__ == "__main__":
-	sys.exit(main_ubint())
+	sys.exit(main())
 

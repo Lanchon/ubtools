@@ -9,21 +9,33 @@ run() {
 	"$@"
 }
 
-getvar() {
-    local varname="$1"
+run_tool() {
+	local tool="$1"
 
-    if out="$( run ./ubcmd --quiet printenv "$varname" )"; then
-        printf '%s\n' "${out#*=}"
-    else
-        #echo "Error: Undefined environment variable: $varname" >&2
-        return 1
-    fi
+	(
+		cd src
+		#run python3 -m "ubtools.cli.$tool" "${@:2}"
+		echo "> $*" >&2
+		python3 -m "ubtools.cli.$tool" "${@:2}"
+	)
+}
+
+getvar() {
+	local varname="$1"
+
+	local out
+	if out="$( run_tool ubcmd --quiet printenv "$varname" )"; then
+		printf '%s\n' "${out#*=}"
+	else
+		#echo "Error: Undefined environment variable: $varname" >&2
+		return 1
+	fi
 }
 
 main() {
-	adr="${1:-}"
+	local adr="${1:-}"
 
-	run ./ubint
+	run_tool ubint
 	echo
 
 	if [[ "$adr" == "" ]]; then
@@ -41,14 +53,16 @@ main() {
 	echo "Scratchpad address: $adr"
 	echo
 
+	local len ref
 	len="$( wc -c < "$FILE" )"
 	ref="$( cat "$FILE" | sha256sum )"
 
 	for (( offset = 0; offset <= 8; offset++ )); do
-		testadr="$(( "$adr" + "$offset" ))"
+		local testadr="$(( "$adr" + "$offset" ))"
+		testadr="$( printf '0x%x' "$testadr" )"
 		echo "*** Test address: $testadr"
-		cat "$FILE" | run ./ubwrite - "$testadr"
-		if [[ "$( run ./ubread - "$testadr" "$len" | sha256sum )" != "$ref" ]]; then
+		cat "$FILE" | run_tool ubwrite - "$testadr"
+		if [[ "$( run_tool ubread - "$testadr" "$len" | sha256sum )" != "$ref" ]]; then
 			echo "Error: Round-trip checksum: FAIL" >&2
 			return 1
 		fi
