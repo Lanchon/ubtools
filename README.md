@@ -38,13 +38,13 @@ pipx install -e .
 Interrupt U-Boot autoboot via the serial console
 
 ```
-usage: ubint [-s XXX] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
+usage: ubint [-s STR] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
              [--version]
 
 Interrupt U-Boot autoboot via the serial console
 
 options:
-  -s XXX, --string XXX  interrupt using custom string
+  -s STR, --string STR  interrupt using custom string
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  baud rate
   --timeout SECONDS     timeout for read operations

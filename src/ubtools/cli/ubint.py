@@ -22,7 +22,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     # already send Return and Ctrl-C characters during initial synchronization,
     # making specific options for these characters unnecessary.
 
-    parser.add_argument("-s", "--string", metavar="XXX",
+    parser.add_argument("-s", "--string", metavar="STR",
                         help="interrupt using custom string")
 
     add_parser_args(parser)
