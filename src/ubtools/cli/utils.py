@@ -57,7 +57,7 @@ def set_config_from_parser_args(config: ubtools.UBootConfig, args) -> None:
 ConfigT = TypeVar("ConfigT", bound=ubtools.UBootConfig)
 
 def config_from_parser_args(args, cls: Type[ConfigT] = ubtools.UBootConfig) -> ConfigT:
-    config = ubtools.UBootConfig()
+    config = cls()
     set_config_from_parser_args(config, args)
     return config
 
