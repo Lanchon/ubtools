@@ -29,7 +29,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     add_parser_args(parser)
     args = parser.parse_args(argv)
-    config = config_from_parser_args(args)
+    config = create_config_for_ubtools(args)
 
     if args.file == "-":
         data = sys.stdin.buffer.read()

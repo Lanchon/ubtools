@@ -26,22 +26,35 @@ run_tool() {
 	### Usage
 
 	To install the tools:
-	```sh
+	```
 	pipx install ubtools
 	```
 
 	To run without installing:
-	```sh
+	```
 	cd src
 	python -m ubtools.cli.COMMAND ...
 	```
 
 	To build and test:
-	```sh
+	```
 	./build
 	./run-tests
 	pipx install -e .
 	```
+
+	### Configuration
+
+	Defaults are loaded from the `serial` section of `~/.config/ubtools/config.toml`, if present:
+	```toml
+	[serial]
+	port = "/dev/ttyUSB0"
+	baud = 115200
+	timeout = 0.1
+	mode = "exclusive"
+	```
+
+	Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can override those values.
 
 	### Commands
 

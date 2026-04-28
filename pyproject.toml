@@ -23,6 +23,7 @@ keywords = [ "u-boot", "uboot", "serial", "bootloader", "embedded" ]
 requires-python = ">=3.11"
 dependencies = [
     "pyserial>=3.5",
+    "platformdirs>=3",
 ]
 
 [project.optional-dependencies]

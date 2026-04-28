@@ -27,7 +27,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     add_parser_args(parser)
     args = parser.parse_args(argv)
-    config = config_from_parser_args(args)
+    config = create_config_for_ubtools(args)
 
     cmd_list = [args.command] + args.args
     cmd = " ".join(cmd_list)

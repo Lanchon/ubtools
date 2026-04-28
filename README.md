@@ -7,22 +7,35 @@ Also included is a simple yet robust Python 3.11 library to talk to U-Boot.
 ### Usage
 
 To install the tools:
-```sh
+```
 pipx install ubtools
 ```
 
 To run without installing:
-```sh
+```
 cd src
 python -m ubtools.cli.COMMAND ...
 ```
 
 To build and test:
-```sh
+```
 ./build
 ./run-tests
 pipx install -e .
 ```
+
+### Configuration
+
+Defaults are loaded from the `serial` section of `~/.config/ubtools/config.toml`, if present:
+```toml
+[serial]
+port = "/dev/ttyUSB0"
+baud = 115200
+timeout = 0.1
+mode = "exclusive"
+```
+
+Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can override those values.
 
 ### Commands
 
@@ -38,17 +51,18 @@ pipx install -e .
 Interrupt U-Boot autoboot via the serial console
 
 ```
-usage: ubint [-s STR] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
-             [--version]
+usage: ubint [-s STR] [-p PORT] [-b BAUD] [--timeout SECONDS]
+             [--mode {shared,exclusive,none}] [-h] [--version]
 
 Interrupt U-Boot autoboot via the serial console
 
 options:
   -s STR, --string STR  interrupt using custom string
   -p PORT, --port PORT  serial port device
-  -b BAUD, --baud BAUD  baud rate
-  --timeout SECONDS     timeout for read operations
-  --shared              open serial port in shared mode
+  -b BAUD, --baud BAUD  serial port baud rate
+  --timeout SECONDS     serial port receive timeout
+  --mode {shared,exclusive,none}
+                        serial port locking mode
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -58,8 +72,8 @@ options:
 Send a command to U-Boot via the serial console and print the output
 
 ```
-usage: ubcmd [-q] [-p PORT] [-b BAUD] [--timeout SECONDS] [--shared] [-h]
-             [--version]
+usage: ubcmd [-q] [-p PORT] [-b BAUD] [--timeout SECONDS]
+             [--mode {shared,exclusive,none}] [-h] [--version]
              COMMAND ...
 
 Send a command to U-Boot via the serial console and print the output
@@ -71,9 +85,10 @@ positional arguments:
 options:
   -q, --quiet           do not show exit code
   -p PORT, --port PORT  serial port device
-  -b BAUD, --baud BAUD  baud rate
-  --timeout SECONDS     timeout for read operations
-  --shared              open serial port in shared mode
+  -b BAUD, --baud BAUD  serial port baud rate
+  --timeout SECONDS     serial port receive timeout
+  --mode {shared,exclusive,none}
+                        serial port locking mode
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -84,7 +99,7 @@ Read from U-Boot memory via the serial console
 
 ```
 usage: ubread [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-              [--shared] [-h] [--version]
+              [--mode {shared,exclusive,none}] [-h] [--version]
               FILE ADDRESS LENGTH
 
 Read from U-Boot memory via the serial console
@@ -98,9 +113,10 @@ options:
   -q, --quiet           do not show progress
   -w BITS, --word BITS  use reads of specified bit width
   -p PORT, --port PORT  serial port device
-  -b BAUD, --baud BAUD  baud rate
-  --timeout SECONDS     timeout for read operations
-  --shared              open serial port in shared mode
+  -b BAUD, --baud BAUD  serial port baud rate
+  --timeout SECONDS     serial port receive timeout
+  --mode {shared,exclusive,none}
+                        serial port locking mode
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -111,7 +127,7 @@ Write to U-Boot memory via the serial console
 
 ```
 usage: ubwrite [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-               [--shared] [-h] [--version]
+               [--mode {shared,exclusive,none}] [-h] [--version]
                FILE ADDRESS
 
 Write to U-Boot memory via the serial console
@@ -124,9 +140,10 @@ options:
   -q, --quiet           do not show progress
   -w BITS, --word BITS  use writes of specified bit width
   -p PORT, --port PORT  serial port device
-  -b BAUD, --baud BAUD  baud rate
-  --timeout SECONDS     timeout for read operations
-  --shared              open serial port in shared mode
+  -b BAUD, --baud BAUD  serial port baud rate
+  --timeout SECONDS     serial port receive timeout
+  --mode {shared,exclusive,none}
+                        serial port locking mode
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
