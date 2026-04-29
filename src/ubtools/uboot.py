@@ -35,10 +35,18 @@ class UBoot:
         try:
             # Send Ctrl-C to purge command line buffer.
             self.serial.write(b'\x03')
-            self.serial.readline()
+            while self.serial.readline():
+                pass
+
+            # Establish sync.
+            cmd = b'#TAG1'
+            self.serial.write(cmd + b'\n')
+            echo = self.serial.readline().strip(b'\r\n')
+            if echo != cmd:
+                raise UBootCommunicationError(f"Failed to establish sync (sent: {cmd!r}, received: {echo!r})")
 
             # Detect U-Boot prompt.
-            cmd = b'#TAG'
+            cmd = b'#TAG2'
             self.serial.write(cmd + b'\n')
             echo = self.serial.readline().strip(b'\r\n')
             if not echo.endswith(cmd):
@@ -46,7 +54,7 @@ class UBoot:
             self.prompt = echo[:-len(cmd)]
 
             # Send test command.
-            self.send_command(b'#TEST')
+            self.send_command(b'#TAG3')
         except Exception:
             try:
                 self.serial.close()
@@ -113,7 +121,7 @@ class UBoot:
                 break
             yield line
 
-        # Reestablish and verify sync.
+        # Reestablish sync.
         cmd = b'#EOO_TAG'
         self.serial.write(cmd + b'\n')
         echo = self.serial.readline().strip(b'\r\n')
