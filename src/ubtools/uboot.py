@@ -13,12 +13,12 @@ from .types import *
 
 class UBoot:
     @classmethod
-    def detect(cls, config: UBootConfig | None = None) -> bool:
+    def detect(cls, config: UBootConfig | None = None) -> str | None:
         try:
-            with cls(config):
-                return True
+            with cls(config) as uboot:
+                return uboot.prompt.decode(uboot.encoding)
         except UBootCommunicationError:
-            return False
+            return None
 
     serial: serial.Serial
     encoding: str

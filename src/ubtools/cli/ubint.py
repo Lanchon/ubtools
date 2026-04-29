@@ -43,18 +43,21 @@ def main(argv: Sequence[str] | None = None) -> None:
         with ubtools.UBoot(config) as uboot:
             uboot.send_command(b'reset')
 
-    if not ubtools.UBoot.detect(config):
+    prompt = ubtools.UBoot.detect(config)
+    if prompt is None:
         if not args.quiet:
             print("Trying to interrupt U-Boot autoboot...", file=sys.stderr)
         while True:
             with config.open_serial() as serial:
                 serial.write(interrupt)
                 time.sleep(serial.timeout)
-            if ubtools.UBoot.detect(config):
+            prompt = ubtools.UBoot.detect(config)
+            if prompt is not None:
                 break
+    prompt = prompt.strip()
 
     if not args.quiet:
-        print("U-Boot is ready", file=sys.stderr)
+        print(f"Prompt: {prompt}", file=sys.stderr)
 
 
 if __name__ == "__main__":
