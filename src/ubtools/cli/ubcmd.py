@@ -18,7 +18,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     parser.add_argument("-q", "--quiet", action="store_true",
-                        help="do not show exit code")
+                        help="do not show non-zero exit code")
 
     parser.add_argument("command", metavar="COMMAND",
                         help="command to send")
