@@ -87,7 +87,7 @@ class UBoot:
         # one of the output capture methods must be called if the invoked command does not finish instantaneously.
         if isinstance(cmd, str):
             cmd = cmd.encode(self.encoding)
-        self.serial.write(cmd + b'\n')
+        self.serial.write(b''.join((cmd, b'\n')))
         echo = self.serial.readline().strip(b'\r\n')
         #if echo.endswith(self.prompt + cmd):
         if echo != self.prompt + cmd:
