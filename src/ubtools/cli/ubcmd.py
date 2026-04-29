@@ -17,7 +17,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         add_help=False
     )
 
-    parser.add_argument("-q", "--quiet", action="store_true",
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-n", "--no-reply", action="store_true",
+                        help="do not retrieve output nor exit code")
+    group.add_argument("-q", "--quiet", action="store_true",
                         help="do not show non-zero exit code")
 
     parser.add_argument("command", metavar="COMMAND",
@@ -32,14 +35,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     cmd_list = [args.command] + args.args
     cmd = " ".join(cmd_list)
 
+    code = 0
     with ubtools.UBoot(config) as uboot:
         uboot.send_command(cmd)
-        for line in uboot.stream_output():
-            print(line)
-        code = uboot.get_exit_code()
-        if not args.quiet and code != 0:
-            print(f"Exit code: {code}", file=sys.stderr)
-        return code
+        if not args.no_reply:
+            for line in uboot.stream_output():
+                print(line)
+            code = uboot.get_exit_code()
+            if not args.quiet and code != 0:
+                print(f"Exit code: {code}", file=sys.stderr)
+
+    return code
 
 
 if __name__ == "__main__":

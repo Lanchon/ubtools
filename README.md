@@ -72,7 +72,7 @@ options:
 Send a command to U-Boot via the serial console and print the output
 
 ```
-usage: ubcmd [-q] [-p PORT] [-b BAUD] [--timeout SECONDS]
+usage: ubcmd [-n | -q] [-p PORT] [-b BAUD] [--timeout SECONDS]
              [--mode {shared,exclusive,none}] [-h] [--version]
              COMMAND ...
 
@@ -83,7 +83,8 @@ positional arguments:
   ARGS                  arguments
 
 options:
-  -q, --quiet           do not show exit code
+  -n, --no-reply        do not retrieve output nor exit code
+  -q, --quiet           do not show non-zero exit code
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  serial port baud rate
   --timeout SECONDS     serial port receive timeout
