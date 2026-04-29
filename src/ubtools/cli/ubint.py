@@ -22,6 +22,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     # already send Return and Ctrl-C characters during initial synchronization,
     # making specific options for these characters unnecessary.
 
+    parser.add_argument("-r", "--reset", action="store_true",
+                        help="send reset command first")
     parser.add_argument("-s", "--string", metavar="STR",
                         help="interrupt using custom string")
 
@@ -32,6 +34,11 @@ def main(argv: Sequence[str] | None = None) -> None:
     interrupt = b' '
     if args.string is not None:
         interrupt = args.string.encode(config.encoding)
+
+    if args.reset:
+        print("Sending reset command...")
+        with ubtools.UBoot(config) as uboot:
+            uboot.send_command(b'reset')
 
     if not ubtools.UBoot.detect(config):
         print("Trying to interrupt U-Boot autoboot...")
