@@ -29,13 +29,15 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
     config = create_config_for_ubtools(args)
 
-    cmd = args.string.encode(config.encoding) if args.string is not None else b' '
+    interrupt = b' '
+    if args.string is not None:
+        interrupt = args.string.encode(config.encoding)
 
     if not ubtools.UBoot.detect(config):
         print("Trying to interrupt U-Boot autoboot...")
         while True:
             with config.open_serial() as serial:
-                serial.write(cmd)
+                serial.write(interrupt)
                 time.sleep(serial.timeout)
             if ubtools.UBoot.detect(config):
                 break

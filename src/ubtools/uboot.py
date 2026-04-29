@@ -267,9 +267,9 @@ class UBoot:
             struct.pack_into(pack_format, chunk, index, word)
             index += step
 
-        ascii = match.group(3)[-size:].encode(self.encoding)
+        chars = match.group(3)[-size:].encode(self.encoding)
         dot = ".".encode(self.encoding)[0]
-        if len(ascii) != size or any(a != c and a != dot for c, a in zip(chunk, ascii)):
+        if len(chars) != size or any(a != c and a != dot for c, a in zip(chunk, chars)):
             raise UBootCommandOutputError(f"md: mismatch between hex and ascii data",
                                           command=cmd, output=[line])
         return chunk
@@ -298,7 +298,7 @@ class UBoot:
                         first = False
                     index += step
                     if progress_file is not None:
-                        percent = (index) * 100 // length
+                        percent = index * 100 // length
                         print(f"\r{message} {percent:3d}%", end="", flush=True, file=progress_file)
             finally:
                 if progress_file is not None and not first:
