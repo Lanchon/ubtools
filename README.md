@@ -51,13 +51,14 @@ Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can overrid
 Interrupt U-Boot autoboot via the serial console
 
 ```
-usage: ubint [-q] [-r] [--prompt PROMPT] [-s STR] [-p PORT] [-b BAUD]
+usage: ubint [-i] [-q] [-r] [--prompt PROMPT] [-s STR] [-p PORT] [-b BAUD]
              [--timeout SECONDS] [--mode {shared,exclusive,none}] [-h]
              [--version]
 
 Interrupt U-Boot autoboot via the serial console
 
 options:
+  -i, --bdinfo          query board info
   -q, --quiet           do not show progress
   -r, --reset           send reset command first
   --prompt PROMPT       detected prompt must match this

@@ -7,6 +7,7 @@ import sys
 from typing import Sequence
 
 import ubtools
+import ubtools.cli.ubcmd as ubcmd
 
 from .utils import *
 
@@ -22,6 +23,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     # already send Return and Ctrl-C characters during initial synchronization,
     # making specific options for these characters unnecessary.
 
+    parser.add_argument("-i", "--bdinfo", action="store_true",
+                        help="query board info")
     parser.add_argument("-q", "--quiet", action="store_true",
                         help="do not show progress")
     parser.add_argument("-r", "--reset", action="store_true",
@@ -35,10 +38,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = create_config_for_ubtools(args)
 
-    return do_interrupt(config, quiet=args.quiet, reset=args.reset,
+    return do_interrupt(config, bdinfo=args.bdinfo, quiet=args.quiet, reset=args.reset,
                         expected_prompt=args.prompt, int_string=args.string)
 
-def do_interrupt(config: ubtools.UBootConfig, quiet: bool = False, reset: bool = False,
+def do_interrupt(config: ubtools.UBootConfig, bdinfo: bool = False, quiet: bool = False, reset: bool = False,
                  expected_prompt: str | None = None, int_string: str | None = None) -> int:
     if reset:
         if not quiet:
@@ -69,7 +72,12 @@ def do_interrupt(config: ubtools.UBootConfig, quiet: bool = False, reset: bool =
     if not quiet:
         print(f"Prompt: {prompt}", file=sys.stderr)
 
-    return 0
+    if bdinfo:
+        if not quiet:
+            print(file=sys.stderr)
+        return ubcmd.do_command(config, "bdinfo", quiet=quiet)
+    else:
+        return 0
 
 
 if __name__ == "__main__":
