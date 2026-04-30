@@ -35,34 +35,38 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = create_config_for_ubtools(args)
 
-    interrupt = b' '
-    if args.string is not None:
-        interrupt = args.string.encode(config.encoding)
+    return do_interrupt(config, quiet=args.quiet, reset=args.reset,
+                        expected_prompt=args.prompt, int_string=args.string)
 
-    if args.reset:
-        if not args.quiet:
+def do_interrupt(config: ubtools.UBootConfig, quiet: bool = False, reset: bool = False,
+                 expected_prompt: str | None = None, int_string: str | None = None) -> int:
+    if reset:
+        if not quiet:
             print("Sending reset command...", file=sys.stderr)
         with ubtools.UBoot(config) as uboot:
-            uboot.send_command(b'reset')
+            uboot.send_command("reset")
 
     prompt = ubtools.UBoot.detect(config)
     if prompt is None:
-        if not args.quiet:
+        if not quiet:
             print("Trying to interrupt U-Boot autoboot...", file=sys.stderr)
+        if int_string is None:
+            int_string = " "
+        int_string = int_string.encode(config.encoding)
         while True:
             with config.open_serial() as serial:
-                serial.write(interrupt)
+                serial.write(int_string)
                 time.sleep(serial.timeout)
             prompt = ubtools.UBoot.detect(config)
             if prompt is not None:
                 break
     prompt = prompt.strip()
 
-    if args.prompt is not None and args.prompt != prompt:
-        print(f"Prompt mismatch (expected: {args.prompt!r}, detected: {prompt!r})", file=sys.stderr)
+    if expected_prompt is not None and expected_prompt != prompt:
+        print(f"Prompt mismatch (expected: {expected_prompt!r}, detected: {prompt!r})", file=sys.stderr)
         return 1
 
-    if not args.quiet:
+    if not quiet:
         print(f"Prompt: {prompt}", file=sys.stderr)
 
     return 0

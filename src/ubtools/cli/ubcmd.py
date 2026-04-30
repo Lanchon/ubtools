@@ -34,17 +34,18 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     cmd_list = [args.command] + args.args
     cmd = " ".join(cmd_list)
+    return do_command(config, cmd, no_reply=args.no_reply, quiet=args.quiet)
 
+def do_command(config: ubtools.UBootConfig, cmd: str, no_reply: bool = False, quiet: bool = False) -> int:
     code = 0
     with ubtools.UBoot(config) as uboot:
         uboot.send_command(cmd)
-        if not args.no_reply:
+        if not no_reply:
             for line in uboot.stream_output():
                 print(line)
             code = uboot.get_exit_code()
-            if not args.quiet and code != 0:
+            if not quiet and code != 0:
                 print(f"Exit code: {code}", file=sys.stderr)
-
     return code
 
 

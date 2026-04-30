@@ -1,6 +1,7 @@
 __all__ = ["main"]
 
 import argparse
+import os
 import sys
 
 from typing import Sequence
@@ -31,16 +32,18 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parser.parse_args(argv)
     config = create_config_for_ubtools(args)
 
-    if args.file == "-":
+    do_write(config, args.file, args.address, quiet=args.quiet, bit_width=args.word)
+
+def do_write(config: ubtools.UBootConfig, file: str | os.PathLike[str], address: int,
+             quiet: bool = False, bit_width: int | None = None) -> None:
+    if file == "-":
         data = sys.stdin.buffer.read()
     else:
-        with open(args.file, "rb") as file:
-            data = file.read()
-
-    progress_file = sys.stderr if not args.quiet else None
-
+        with open(file, "rb") as f:
+            data = f.read()
+    progress_file = None if quiet else sys.stderr
     with ubtools.UBoot(config) as uboot:
-        uboot.write(data, args.address, bit_width=args.word, progress_file=progress_file)
+        uboot.write(data, address, bit_width=bit_width, progress_file=progress_file)
 
 
 if __name__ == "__main__":
