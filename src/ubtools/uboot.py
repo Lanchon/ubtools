@@ -80,7 +80,7 @@ class UBoot:
             raise UBootCommandExitCodeError(command=cmd, output=out, exit_code=code)
         if expected_line_count is not None and expected_line_count != len(out):
             raise UBootCommandOutputError(f"Unexpected command output line count "
-                                          f"(expected {expected_line_count}, got {len(out)})",
+                                          f"(expected: {expected_line_count}, received: {len(out)})",
                                           command=cmd, output=out, exit_code=code)
         return out
 
