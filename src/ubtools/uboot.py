@@ -66,6 +66,10 @@ class UBoot:
                     rp = rp.decode(self.encoding)
                     raise UBootUnexpectedPromptError(f"Unexpected prompt (expected: {ep!r}, received: {rp!r})",
                                                      prompt=rp)
+            else:
+                if not self.prompt:
+                    raise UBootUnexpectedPromptError("Empty prompt rejected (specify explicitly if expected)",
+                                                     prompt="")
         except Exception:
             try:
                 self.serial.close()
