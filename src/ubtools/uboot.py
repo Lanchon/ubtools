@@ -112,9 +112,9 @@ class UBoot:
             cmd = cmd.encode(self.encoding)
         self.serial.write(b''.join((cmd, b'\n')))
         echo = self.serial.readline().strip(b'\r\n')
-        #if echo.endswith(self.prompt + cmd):
-        if echo != self.prompt + cmd:
-            raise UBootCommunicationError(f"Command echo mismatch (sent: {cmd!r}, received: {echo!r})")
+        expected = self.prompt + cmd
+        if expected != echo:
+            raise UBootCommunicationError(f"Unexpected command echo (expected: {expected!r}, received: {echo!r})")
 
     def receive_output(self) -> list[str]:
         return list(self.stream_output())
@@ -141,7 +141,7 @@ class UBoot:
         self.serial.write(cmd + b'\n')
         echo = self.serial.readline().strip(b'\r\n')
         if echo != cmd:
-            raise UBootCommunicationError(f"Failed to detect end-of-output tag (sent: {cmd!r}, received: {echo!r})")
+            raise UBootCommunicationError(f"Failed to detect end-of-output tag (expected: {cmd!r}, received: {echo!r})")
 
     def get_exit_code(self, restore: bool = False) -> int:
         # WARNING: reading the exit code necessarily clears it and in general there is no way to restore its value,
