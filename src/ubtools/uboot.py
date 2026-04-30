@@ -68,8 +68,7 @@ class UBoot:
                                                      prompt=rp)
             else:
                 if not self.prompt:
-                    raise UBootUnexpectedPromptError("Empty prompt rejected (specify explicitly if expected)",
-                                                     prompt="")
+                    raise UBootCommunicationError("Empty prompt rejected (specify explicitly if expected)")
         except Exception:
             try:
                 self.serial.close()

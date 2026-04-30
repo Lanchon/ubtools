@@ -6,7 +6,7 @@ class UBootCommunicationError(UBootError):
     pass
 
 
-class UBootUnexpectedPromptError(UBootCommunicationError):
+class UBootUnexpectedPromptError(UBootError):
     def __init__(self, message: str, prompt: str | None) -> None:
         super().__init__(message)
         self.prompt = prompt
