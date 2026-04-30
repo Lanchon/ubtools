@@ -11,7 +11,7 @@ import ubtools
 from .utils import *
 
 
-def main(argv: Sequence[str] | None = None) -> None:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="ubint",
         description="Interrupt U-Boot autoboot via the serial console",
@@ -26,6 +26,8 @@ def main(argv: Sequence[str] | None = None) -> None:
                         help="do not show progress")
     parser.add_argument("-r", "--reset", action="store_true",
                         help="send reset command first")
+    parser.add_argument("--prompt",
+                        help="detected prompt must match this")
     parser.add_argument("-s", "--string", metavar="STR",
                         help="interrupt using custom string")
 
@@ -56,8 +58,14 @@ def main(argv: Sequence[str] | None = None) -> None:
                 break
     prompt = prompt.strip()
 
+    if args.prompt is not None and args.prompt != prompt:
+        print(f"Prompt mismatch (expected: {args.prompt!r}, detected: {prompt!r})", file=sys.stderr)
+        return 1
+
     if not args.quiet:
         print(f"Prompt: {prompt}", file=sys.stderr)
+
+    return 0
 
 
 if __name__ == "__main__":
