@@ -19,6 +19,8 @@ class UBootConfig:
 
     encoding: str = "latin-1"
 
+    expected_prompt: str | None = None
+
     def open_serial(self) -> serial.Serial:
         return serial.Serial(
             port=self.port,

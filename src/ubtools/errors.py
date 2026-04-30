@@ -6,6 +6,18 @@ class UBootCommunicationError(UBootError):
     pass
 
 
+class UBootUnexpectedPromptError(UBootCommunicationError):
+    def __init__(self, message: str, prompt: str | None) -> None:
+        super().__init__(message)
+        self.prompt = prompt
+
+    def __str__(self) -> str:
+        parts = [super().__str__()]
+        if self.prompt is not None:
+            parts.append(f"prompt={self.prompt!r}")
+        return "\n\t".join(parts)
+
+
 class UBootCommandError(UBootError):
     def __init__(self, message: str, command: str | None = None, output: list[str] | None = None,
                  exit_code: int | None = None) -> None:

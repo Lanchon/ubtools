@@ -52,6 +52,7 @@ run_tool() {
 	baud = 115200
 	timeout = 0.1
 	mode = "exclusive"
+	#prompt = "U-Boot #"
 	```
 
 	Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can override those values.

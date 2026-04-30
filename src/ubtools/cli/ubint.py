@@ -29,8 +29,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                         help="do not show progress")
     parser.add_argument("-r", "--reset", action="store_true",
                         help="send reset command first")
-    parser.add_argument("--prompt",
-                        help="detected prompt must match this")
     parser.add_argument("-s", "--string", metavar="STR",
                         help="interrupt using custom string")
 
@@ -38,11 +36,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config = create_config_for_ubtools(args)
 
-    return do_interrupt(config, bdinfo=args.bdinfo, quiet=args.quiet, reset=args.reset,
-                        expected_prompt=args.prompt, int_string=args.string)
+    return do_interrupt(config, bdinfo=args.bdinfo, quiet=args.quiet, reset=args.reset, int_string=args.string)
 
 def do_interrupt(config: ubtools.UBootConfig, bdinfo: bool = False, quiet: bool = False, reset: bool = False,
-                 expected_prompt: str | None = None, int_string: str | None = None) -> int:
+                 int_string: str | None = None) -> int:
     if reset:
         if not quiet:
             print("Sending reset command...", file=sys.stderr)
@@ -63,14 +60,9 @@ def do_interrupt(config: ubtools.UBootConfig, bdinfo: bool = False, quiet: bool 
             prompt = ubtools.UBoot.detect(config)
             if prompt is not None:
                 break
-    prompt = prompt.strip()
-
-    if expected_prompt is not None and expected_prompt != prompt:
-        print(f"Prompt mismatch (expected: {expected_prompt!r}, detected: {prompt!r})", file=sys.stderr)
-        return 1
 
     if not quiet:
-        print(f"Prompt: {prompt}", file=sys.stderr)
+        print(f"Prompt: {prompt.strip()}", file=sys.stderr)
 
     if bdinfo:
         if not quiet:

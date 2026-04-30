@@ -45,7 +45,7 @@ class UBoot:
             if echo != cmd:
                 raise UBootCommunicationError(f"Failed to establish sync (sent: {cmd!r}, received: {echo!r})")
 
-            # Detect U-Boot prompt.
+            # Detect prompt.
             cmd = b'#TAG2'
             self.serial.write(cmd + b'\n')
             echo = self.serial.readline().strip(b'\r\n')
@@ -53,8 +53,19 @@ class UBoot:
                 raise UBootCommunicationError(f"Failed to detect prompt (sent: {cmd!r}, received: {echo!r})")
             self.prompt = echo[:-len(cmd)]
 
-            # Send test command.
+            # Verify prompt detection.
             self.send_command(b'#TAG3')
+
+            # Verify prompt content.
+            ep = config.expected_prompt
+            if ep is not None:
+                ep = ep.encode(self.encoding).strip()
+                rp = self.prompt.strip()
+                if ep != rp:
+                    ep = ep.decode(self.encoding)
+                    rp = rp.decode(self.encoding)
+                    raise UBootUnexpectedPromptError(f"Unexpected prompt (expected: {ep!r}, received: {rp!r})",
+                                                     prompt=rp)
         except Exception:
             try:
                 self.serial.close()

@@ -33,6 +33,7 @@ port = "/dev/ttyUSB0"
 baud = 115200
 timeout = 0.1
 mode = "exclusive"
+#prompt = "U-Boot #"
 ```
 
 Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can override those values.
@@ -51,8 +52,8 @@ Environment variables of the form `UBTOOLS_*` (`UBTOOLS_PORT`, etc.) can overrid
 Interrupt U-Boot autoboot via the serial console
 
 ```
-usage: ubint [-i] [-q] [-r] [--prompt PROMPT] [-s STR] [-p PORT] [-b BAUD]
-             [--timeout SECONDS] [--mode {shared,exclusive,none}] [-h]
+usage: ubint [-i] [-q] [-r] [-s STR] [-p PORT] [-b BAUD] [--timeout SECONDS]
+             [--mode {shared,exclusive,none}] [--prompt PROMPT] [-h]
              [--version]
 
 Interrupt U-Boot autoboot via the serial console
@@ -61,13 +62,13 @@ options:
   -i, --bdinfo          query board info
   -q, --quiet           do not show progress
   -r, --reset           send reset command first
-  --prompt PROMPT       detected prompt must match this
   -s STR, --string STR  interrupt using custom string
   -p PORT, --port PORT  serial port device
   -b BAUD, --baud BAUD  serial port baud rate
   --timeout SECONDS     serial port receive timeout
   --mode {shared,exclusive,none}
                         serial port locking mode
+  --prompt PROMPT       specify expected prompt
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -78,7 +79,8 @@ Send a command to U-Boot via the serial console and print the output
 
 ```
 usage: ubcmd [-n | -q] [-p PORT] [-b BAUD] [--timeout SECONDS]
-             [--mode {shared,exclusive,none}] [-h] [--version]
+             [--mode {shared,exclusive,none}] [--prompt PROMPT] [-h]
+             [--version]
              COMMAND ...
 
 Send a command to U-Boot via the serial console and print the output
@@ -95,6 +97,7 @@ options:
   --timeout SECONDS     serial port receive timeout
   --mode {shared,exclusive,none}
                         serial port locking mode
+  --prompt PROMPT       specify expected prompt
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -105,7 +108,8 @@ Read from U-Boot memory via the serial console
 
 ```
 usage: ubread [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-              [--mode {shared,exclusive,none}] [-h] [--version]
+              [--mode {shared,exclusive,none}] [--prompt PROMPT] [-h]
+              [--version]
               FILE ADDRESS LENGTH
 
 Read from U-Boot memory via the serial console
@@ -123,6 +127,7 @@ options:
   --timeout SECONDS     serial port receive timeout
   --mode {shared,exclusive,none}
                         serial port locking mode
+  --prompt PROMPT       specify expected prompt
   -h, --help            show help message and exit
   --version             show version number and exit
 ```
@@ -133,7 +138,8 @@ Write to U-Boot memory via the serial console
 
 ```
 usage: ubwrite [-q] [-w BITS] [-p PORT] [-b BAUD] [--timeout SECONDS]
-               [--mode {shared,exclusive,none}] [-h] [--version]
+               [--mode {shared,exclusive,none}] [--prompt PROMPT] [-h]
+               [--version]
                FILE ADDRESS
 
 Write to U-Boot memory via the serial console
@@ -150,6 +156,7 @@ options:
   --timeout SECONDS     serial port receive timeout
   --mode {shared,exclusive,none}
                         serial port locking mode
+  --prompt PROMPT       specify expected prompt
   -h, --help            show help message and exit
   --version             show version number and exit
 ```

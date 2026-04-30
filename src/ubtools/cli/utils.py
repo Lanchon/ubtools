@@ -46,6 +46,8 @@ def add_config_parser_args(parser) -> None:
                         help="serial port receive timeout")
     parser.add_argument("--mode", choices=["shared", "exclusive", "none"],
                         help="serial port locking mode")
+    parser.add_argument("--prompt",
+                        help="specify expected prompt")
 
 def add_version_parser_arg(parser) -> None:
     parser.add_argument("-h", "--help", action="help",
@@ -72,6 +74,7 @@ def set_config_from_field_getter(config: ubtools.UBootConfig, get) -> None:
     baud = get("baud")
     timeout = get("timeout")
     mode = get("mode")
+    prompt = get("prompt")
     if port is not None:
         config.port = str(port)
     if baud is not None:
@@ -80,6 +83,8 @@ def set_config_from_field_getter(config: ubtools.UBootConfig, get) -> None:
         config.timeout = float(timeout)
     if mode is not None:
         config.exclusive = parse_locking_mode(mode)
+    if prompt is not None:
+        config.expected_prompt = str(prompt)
 
 def parse_locking_mode(mode: str) -> bool | None:
     match mode:
